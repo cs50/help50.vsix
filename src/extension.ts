@@ -51,7 +51,6 @@ export function activate(context: vscode.ExtensionContext) {
       if (latestButtonAction === "ask") {
         try {
           await vscode.commands.executeCommand("help50.ask", [latestErrorMessage]);
-          await vscode.window.showInformationMessage("Asking for help...\n" + latestErrorMessage);
         } catch (error) {
           console.error(error);
         }
@@ -59,7 +58,6 @@ export function activate(context: vscode.ExtensionContext) {
       else if (latestButtonAction === "say") {
         try {
           await vscode.commands.executeCommand("help50.say", [latestErrorMessage]);
-          await vscode.window.showInformationMessage("Saying the message...\n" + latestErrorMessage);
         } catch (error) {
           console.error(error);
         }
