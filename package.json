@@ -26,14 +26,14 @@
         "title": "Hide Help50 Button"
       },
       {
-        "command": "help50.run",
+        "command": "help50.askForHelp",
         "title": "help50"
       }
     ],
     "menus": {
       "view/title": [
         {
-          "command": "help50.run",
+          "command": "help50.askForHelp",
           "group": "navigation@-1",
           "when": "view == terminal && help50:didActivateButton"
         }

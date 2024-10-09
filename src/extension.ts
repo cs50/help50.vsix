@@ -1,9 +1,12 @@
 import * as vscode from "vscode";
 
+// Global variable to hold the latest error message
+let latestErrorMessage = "";
+
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("help50.showButton", async (args) => {
-      console.log("help50.showButton");
+      latestErrorMessage = args[0];
       await vscode.commands.executeCommand(
         "setContext",
         "help50:didActivateButton",
@@ -14,7 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand("help50.hideButton", async (args) => {
-      console.log("help50.hideButton");
+      latestErrorMessage = "";
       await vscode.commands.executeCommand(
         "setContext",
         "help50:didActivateButton",
@@ -22,6 +25,17 @@ export function activate(context: vscode.ExtensionContext) {
       );
     })
   );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("help50.askForHelp", async (args) => {
+      try {
+        await vscode.window.showInformationMessage("Asking for help...\n" + latestErrorMessage);
+        await vscode.commands.executeCommand("help50.ask", [latestErrorMessage]);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  ));
 
   context.subscriptions.push(
     vscode.commands.registerCommand("help50.ask", async (args) => {
