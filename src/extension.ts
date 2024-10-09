@@ -78,7 +78,7 @@ export function activate(context: vscode.ExtensionContext) {
           error_message: errorMessage,
           stream: true
         };
-        const contextMessage = `${displayMessage}:\n\`\`\`${errorMessage}`;
+        const contextMessage = `${displayMessage}:\n\n${errorMessage}`;
         await api.requestGptResponse(displayMessage, contextMessage, payload);
         await vscode.commands.executeCommand("help50.hideButton");
       } catch (error) {
