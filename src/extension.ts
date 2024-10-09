@@ -31,7 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
         const api = ddb50!.exports;
         const displayMessage = "Explain terminal error";
         const payload = {
-          api: "/api/v1/terminal",
+          api: "/api/v1/help",
           config: "chat_cs50",
           error_message: errorMessage,
           stream: true
