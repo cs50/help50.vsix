@@ -96,6 +96,7 @@ export function activate(context: vscode.ExtensionContext) {
         const ddb50 = vscode.extensions.getExtension("cs50.ddb50");
         const api = ddb50!.exports;
         api.requestDuckSay(ddbMessage);
+        await vscode.commands.executeCommand("help50.hideButton");
       } catch (error) {
         console.error(error);
       }
