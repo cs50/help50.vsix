@@ -2,11 +2,31 @@ import * as vscode from "vscode";
 
 // Global variable to hold the latest error message
 let latestErrorMessage = "";
+let latestButtonAction = "";
 
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("help50.showButton", async (args) => {
-      latestErrorMessage = args[0];
+      if (args.length !== 2) {
+        vscode.window.showErrorMessage("Invalid number of arguments", args.length);
+        console.error("Invalid number of arguments", args.length);
+        return;
+      }
+
+      if (["ask", "say"].includes(args[0])) {
+        vscode.window.showErrorMessage("Invalid button action", latestButtonAction);
+        console.error("Invalid button action", latestButtonAction);
+        return;
+      }
+      latestButtonAction = args[0];
+
+      if (typeof args[1] !== "string") {
+        vscode.window.showErrorMessage("Invalid error message", args[1]);
+        console.error("Invalid error message", args[1]);
+        return;
+      }
+      latestErrorMessage = args[1];
+
       await vscode.commands.executeCommand(
         "setContext",
         "help50:didActivateButton",
@@ -16,7 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("help50.hideButton", async (args) => {
+    vscode.commands.registerCommand("help50.hideButton", async () => {
       latestErrorMessage = "";
       await vscode.commands.executeCommand(
         "setContext",
@@ -27,12 +47,27 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("help50.askForHelp", async (args) => {
-      try {
-        await vscode.window.showInformationMessage("Asking for help...\n" + latestErrorMessage);
-        await vscode.commands.executeCommand("help50.ask", [latestErrorMessage]);
-      } catch (error) {
-        console.error(error);
+    vscode.commands.registerCommand("help50.askForHelp", async () => {
+
+      if (latestButtonAction === "") {
+        return;
+      }
+
+      if (latestButtonAction === "ask") {
+        try {
+          await vscode.window.showInformationMessage("Asking for help...\n" + latestErrorMessage);
+          await vscode.commands.executeCommand("help50.ask", [latestErrorMessage]);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      else if (latestButtonAction === "say") {
+        try {
+          await vscode.window.showInformationMessage("Saying the message...\n" + latestErrorMessage);
+          await vscode.commands.executeCommand("help50.say", [latestErrorMessage]);
+        } catch (error) {
+          console.error(error);
+        }
       }
     }
   ));
