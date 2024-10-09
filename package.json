@@ -34,7 +34,7 @@
       "view/title": [
         {
           "command": "help50.askForHelp",
-          "group": "navigation@-1",
+          "group": "navigation@-50",
           "when": "view == terminal && help50:didActivateButton"
         }
       ]

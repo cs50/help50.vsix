@@ -13,7 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
 
-      if (["ask", "say"].includes(args[0])) {
+      if (!["ask", "say"].includes(args[0])) {
         vscode.window.showErrorMessage("Invalid button action", latestButtonAction);
         console.error("Invalid button action", latestButtonAction);
         return;
