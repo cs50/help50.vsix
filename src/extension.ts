@@ -48,23 +48,18 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand("help50.askForHelp", async () => {
-
-      if (latestButtonAction === "") {
-        return;
-      }
-
       if (latestButtonAction === "ask") {
         try {
-          await vscode.window.showInformationMessage("Asking for help...\n" + latestErrorMessage);
           await vscode.commands.executeCommand("help50.ask", [latestErrorMessage]);
+          await vscode.window.showInformationMessage("Asking for help...\n" + latestErrorMessage);
         } catch (error) {
           console.error(error);
         }
       }
       else if (latestButtonAction === "say") {
         try {
-          await vscode.window.showInformationMessage("Saying the message...\n" + latestErrorMessage);
           await vscode.commands.executeCommand("help50.say", [latestErrorMessage]);
+          await vscode.window.showInformationMessage("Saying the message...\n" + latestErrorMessage);
         } catch (error) {
           console.error(error);
         }
