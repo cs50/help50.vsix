@@ -27,8 +27,7 @@
       },
       {
         "command": "help50.askForHelp",
-        "title": "help50",
-        "icon": "$(lightbulb)"
+        "title": "help50"
       }
     ],
     "menus": {
