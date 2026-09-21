@@ -1,12 +1,12 @@
 {
   "name": "help50",
   "displayName": "Help50",
-  "description": "",
+  "description": "Relays terminal errors from help50 to the CS50 Duck",
   "version": "0.0.1",
   "publisher": "CS50",
   "repository": "https://github.com/cs50/help50.vsix",
   "engines": {
-    "vscode": "^1.107.0"
+    "vscode": "^1.132.0"
   },
   "categories": [
     "Education"
@@ -27,7 +27,8 @@
       },
       {
         "command": "help50.askForHelp",
-        "title": "help50"
+        "title": "help50",
+        "icon": "$(lightbulb)"
       }
     ],
     "menus": {
@@ -49,14 +50,13 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.107.0",
     "@types/mocha": "^10.0.10",
-    "@types/node": "25.x",
-    "@typescript-eslint/eslint-plugin": "^8.51.0",
-    "@typescript-eslint/parser": "^8.51.0",
-    "eslint": "^9.39.2",
-    "typescript": "^5.9.3",
-    "@vscode/test-cli": "^0.0.12",
-    "@vscode/test-electron": "^2.5.2"
+    "@types/node": "^26.6.2",
+    "@types/vscode": "^1.132.0",
+    "@vscode/test-cli": "^0.0.15",
+    "@vscode/test-electron": "^3.1.0",
+    "eslint": "^10.11.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.70.0"
   }
 }
