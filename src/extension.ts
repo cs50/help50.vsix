@@ -13,6 +13,11 @@ async function setButtonVisible(visible: boolean) {
   await vscode.commands.executeCommand("setContext", "help50:didActivateButton", visible);
 }
 
+// Whether a failure is currently pending behind the button (read fresh, after any await)
+function hasPendingFailure(): boolean {
+  return latestButtonAction !== "" && latestErrorMessage !== "";
+}
+
 // ddb50 exposes its API through activate(); calling activate() on an already-active
 // extension is a no-op that returns the same exports.
 async function ddb50Api(): Promise<any | undefined> {
@@ -68,7 +73,7 @@ export function activate(context: vscode.ExtensionContext) {
   // The button itself
   context.subscriptions.push(
     vscode.commands.registerCommand("help50.askForHelp", async () => {
-      if (latestButtonAction === "" || latestErrorMessage === "") {
+      if (!hasPendingFailure()) {
         await vscode.commands.executeCommand("help50.hideButton");
         return;
       }
@@ -78,22 +83,33 @@ export function activate(context: vscode.ExtensionContext) {
       const action = latestButtonAction;
       const message = latestErrorMessage;
       await vscode.commands.executeCommand("help50.hideButton");
+
+      let delivered = false;
       try {
-        await vscode.commands.executeCommand(`help50.${action}`, [message]);
+        delivered = await vscode.commands.executeCommand<boolean>(`help50.${action}`, [message]);
       } catch (error) {
         console.error(error);
+      }
+
+      // The duck never got the message (ddb50 missing, or its webview did not become ready):
+      // put the button back so the student can try again, unless a newer failure has since
+      // raised it with its own message
+      if (!delivered && !hasPendingFailure()) {
+        latestButtonAction = action;
+        latestErrorMessage = message;
+        await setButtonVisible(true);
       }
     })
   );
 
-  // Ask cs50.ai to explain the error
+  // Ask cs50.ai to explain the error. Resolves to whether the request reached the duck.
   context.subscriptions.push(
-    vscode.commands.registerCommand("help50.ask", async (args) => {
+    vscode.commands.registerCommand("help50.ask", async (args): Promise<boolean> => {
       try {
         const errorMessage = args[0];
         const api = await ddb50Api();
         if (!api) {
-          return;
+          return false;
         }
         const displayMessage = "Explain terminal error";
         const payload = {
@@ -103,25 +119,28 @@ export function activate(context: vscode.ExtensionContext) {
           stream: true
         };
         const contextMessage = `${displayMessage}:\n\n${errorMessage}`;
-        await api.requestGptResponse(displayMessage, contextMessage, payload);
+        // Older ddb50 builds resolve to undefined; only an explicit false means "not delivered"
+        return (await api.requestGptResponse(displayMessage, contextMessage, payload)) !== false;
       } catch (error) {
         console.error(error);
+        return false;
       }
     })
   );
 
-  // Have the duck say the helper's advice
+  // Have the duck say the helper's advice. Resolves to whether the message reached the duck.
   context.subscriptions.push(
-    vscode.commands.registerCommand("help50.say", async (args) => {
+    vscode.commands.registerCommand("help50.say", async (args): Promise<boolean> => {
       try {
         const ddbMessage = args[0];
         const api = await ddb50Api();
         if (!api) {
-          return;
+          return false;
         }
-        await api.requestDuckSay(ddbMessage);
+        return (await api.requestDuckSay(ddbMessage)) !== false;
       } catch (error) {
         console.error(error);
+        return false;
       }
     })
   );
