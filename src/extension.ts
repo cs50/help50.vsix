@@ -72,8 +72,14 @@ export function activate(context: vscode.ExtensionContext) {
         await vscode.commands.executeCommand("help50.hideButton");
         return;
       }
+
+      // Take the message and hide the button before dispatching, so that a second click while
+      // the duck is still starting up or answering can't send the same request again
+      const action = latestButtonAction;
+      const message = latestErrorMessage;
+      await vscode.commands.executeCommand("help50.hideButton");
       try {
-        await vscode.commands.executeCommand(`help50.${latestButtonAction}`, [latestErrorMessage]);
+        await vscode.commands.executeCommand(`help50.${action}`, [message]);
       } catch (error) {
         console.error(error);
       }
@@ -98,7 +104,6 @@ export function activate(context: vscode.ExtensionContext) {
         };
         const contextMessage = `${displayMessage}:\n\n${errorMessage}`;
         await api.requestGptResponse(displayMessage, contextMessage, payload);
-        await vscode.commands.executeCommand("help50.hideButton");
       } catch (error) {
         console.error(error);
       }
@@ -115,7 +120,6 @@ export function activate(context: vscode.ExtensionContext) {
           return;
         }
         await api.requestDuckSay(ddbMessage);
-        await vscode.commands.executeCommand("help50.hideButton");
       } catch (error) {
         console.error(error);
       }
