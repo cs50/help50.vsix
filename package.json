@@ -6,7 +6,7 @@
   "publisher": "CS50",
   "repository": "https://github.com/cs50/help50.vsix",
   "engines": {
-    "vscode": "^1.140.0"
+    "vscode": "^1.144.0"
   },
   "categories": [
     "Education"
@@ -50,16 +50,18 @@
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
-    "@types/node": "^26.6.5",
-    "@types/vscode": "^1.140.0",
+    "@types/node": "^26.6.6",
+    "@types/vscode": "^1.144.0",
     "@vscode/test-cli": "^0.0.15",
     "@vscode/test-electron": "^3.1.0",
-    "eslint": "^10.13.0",
+    "eslint": "^10.15.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.72.0"
+    "typescript-eslint": "^8.73.0"
   },
   "overrides": {
     "@vscode/test-cli": {
+      "glob": "^14.0.2",
+      "minimatch": "^11.0.1",
       "mocha": "^12.0.3"
     }
   }
